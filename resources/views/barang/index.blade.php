@@ -1,10 +1,14 @@
+@php($role = \Illuminate\Support\Facades\Auth::user()->role)
+
 @extends('custom-layouts.app')
 @section('header')
     Data Barang
 
+    @if($role == 'superuser')
     <a href="{{ route('barang.create') }}">
         <i class="fas fa-plus-circle"></i>
     </a>
+    @endif
 @endsection
 @section('content')
     <div class="row">
@@ -20,9 +24,9 @@
                             <th>Kategori</th>
                             <th>Harga</th>
                             <th>Diskon</th>
-                            <th>
-                                Aksi
-                            </th>
+                            @if($role == 'superuser')
+                                <th>Aksi</th>
+                            @endif
                         </tr>
                         </thead>
                         <tbody>
@@ -38,6 +42,7 @@
                                 <td>{{$value->kategori}}</td>
                                 <td>{{$value->harga}}</td>
                                 <td>{{$value->diskon}}</td>
+                                @if($role == 'superuser')
                                 <td>
                                     <form action="{{ route('barang.destroy',$value->id) }}" method="POST">
                                         @csrf
@@ -51,6 +56,7 @@
                                         </button>
                                     </form>
                                 </td>
+                                @endif
                             </tr>
                         @endforeach
                         </tbody>

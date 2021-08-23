@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 
@@ -33,7 +34,12 @@ class BarangController extends Controller
     public function create()
     {
         //
-        return view('barang.create');
+        if ($this->role() == 'superuser'){
+            return view('barang.create');
+        } else {
+            Alert::warning('Perhatian', 'Hanya superuser yang bisa mengisi');
+            return redirect('barang');
+        }
     }
 
     /**
@@ -87,10 +93,15 @@ class BarangController extends Controller
     public function edit($id)
     {
         //
-        $data = [
-            'barang' => Barang::find($id)
-        ];
-        return view('barang.update',$data);
+        if ($this->role() == 'superuser') {
+            $data = [
+                'barang' => Barang::find($id)
+            ];
+            return view('barang.update', $data);
+        } else {
+            Alert::warning('Perhatian', 'Hanya superuser yang bisa mengisi');
+            return redirect('barang');
+        }
     }
 
     /**
@@ -151,5 +162,9 @@ class BarangController extends Controller
             return $input*0.05;
         }
         return 0;
+    }
+
+    private function role(){
+        return Auth::user()->role;
     }
 }
