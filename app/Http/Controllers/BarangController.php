@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Produk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BarangController extends Controller
 {
@@ -83,6 +84,10 @@ class BarangController extends Controller
     public function edit($id)
     {
         //
+        $data = [
+            'barang' => Barang::find($id)
+        ];
+        return view('barang.update',$data);
     }
 
     /**
@@ -95,6 +100,24 @@ class BarangController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $updateData = [
+            'nama' => $request->input('nama'),
+            'kategori' => $request->input('kategori'),
+            'harga' => $request->input('harga'),
+            'diskon' => $this->diskon($request->input('harga')),
+        ];
+        if ($request->hasFile('foto')){
+            $path = $request->file('foto')->store('uploads/image/barang');
+
+            $updateData['foto'] = $path;
+        }
+        $update = Barang::where('id',$id)
+            ->update($updateData);
+        if ($update) {
+            return redirect('barang');
+        } else {
+            return redirect('barang');
+        }
     }
 
     /**
@@ -106,6 +129,11 @@ class BarangController extends Controller
     public function destroy($id)
     {
         //
+        $barang = Barang::findOrFail($id);
+        Storage::delete($barang->foto);
+        $barang->delete();
+
+        return redirect('barang');
     }
 
     private function diskon($input)

@@ -38,7 +38,19 @@
                                 <td>{{$value->kategori}}</td>
                                 <td>{{$value->harga}}</td>
                                 <td>{{$value->diskon}}</td>
-                                <td></td>
+                                <td>
+                                    <form action="{{ route('barang.destroy',$value->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <a href="{{ route('barang.edit',$value->id) }}"  class="btn btn-sm btn-success" >
+                                            <i class="fas fa-edit text-white"></i>
+                                        </a>
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Hapus Data ?')">
+                                            <i class="fas fa-trash-alt text-white"></i>
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                         </tbody>
