@@ -104,6 +104,8 @@
 <script src="{{asset('assets/assets/js/app.js')}}"></script>
 <script src="{{asset('assets/assets/js/custom.js')}}"></script>
 
+@include('sweetalert::alert')
+
 </body>
 
 </html>

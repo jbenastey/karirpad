@@ -6,6 +6,7 @@ use App\Models\Barang;
 use App\Models\Produk;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use RealRashid\SweetAlert\Facades\Alert;
 
 class BarangController extends Controller
 {
@@ -55,11 +56,13 @@ class BarangController extends Controller
                 'diskon' => $this->diskon($request->input('harga')),
             ]);
             if ($simpan) {
-                return redirect('barang');
+                Alert::success('Berhasil', 'Data berhasil disimpan');
             } else {
-                return redirect('barang');
+                Alert::error('Gagal', 'Data gagal disimpan');
             }
+            return redirect('barang');
         } else {
+            Alert::error('Gagal', 'Data gagal disimpan');
             return redirect('barang');
         }
     }
@@ -108,16 +111,18 @@ class BarangController extends Controller
         ];
         if ($request->hasFile('foto')){
             $path = $request->file('foto')->store('uploads/image/barang');
-
             $updateData['foto'] = $path;
+            $barang = Barang::find($id);
+            Storage::delete($barang->foto);
         }
         $update = Barang::where('id',$id)
             ->update($updateData);
         if ($update) {
-            return redirect('barang');
+            Alert::success('Berhasil', 'Data berhasil diupdate');
         } else {
-            return redirect('barang');
+            Alert::error('Gagal', 'Data gagal diupdate');
         }
+        return redirect('barang');
     }
 
     /**
@@ -132,6 +137,8 @@ class BarangController extends Controller
         $barang = Barang::findOrFail($id);
         Storage::delete($barang->foto);
         $barang->delete();
+
+        Alert::success('Berhasil', 'Data berhasil dihapus');
 
         return redirect('barang');
     }
